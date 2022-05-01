@@ -181,7 +181,7 @@ def main():
 
 
 if __name__ == '__main__':
-    for i in range(1, 101):
+    for i in range(1, 21):
         dom = 'fake-' + str(i) + '.' + victim_domain
         referral_responses.append(NS(dom))
     main()
