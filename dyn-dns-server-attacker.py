@@ -83,7 +83,7 @@ def dns_response(data, client_ip):
     elif qn.endswith('.' + attack_domain):  # NXDomain
         val = 0  # TODO: random.choice([0, 1])
         if val == 0:
-            mp = qn.split('.')[-3]
+            mp = qn.split('.')[-4]
             referral_responses = []
             for i in range(1, 51):
                 dom = mp + '-' + str(i) + '.' + victim_domain
