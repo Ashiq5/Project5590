@@ -89,8 +89,11 @@ def dns_response(data, client_ip):
         line = now + ' ' + ip + ' ' + qn + ' ' + qt + ' ' + \
                str(reply.header.rcode) + ' ' + str(request.header.tc) + ' ' + str(request.header.rd) + \
                ' ' + str(request.header.cd)
-        os.system(
-            'echo "' + line + '" >> ' + 'log')
+        if not (qn.__contains__('dmarc') or qn.__contains__('mta-sts') or qn.__contains__(
+                'domainkey') or qn.__contains__(
+                'bimi') or qn.__contains__('_acme-challenge') or qn.__contains__('_smtp._tls')):
+            os.system(
+                'echo "' + line + '" >> ' + 'log')
     except Exception as e:
         print(e)
 
