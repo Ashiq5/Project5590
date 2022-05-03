@@ -64,7 +64,10 @@ def dns_response(data, client_ip):
     qtype = request.q.qtype
     qt = QTYPE[qtype]
 
-    if qn == victim_domain or qn.endswith('.' + victim_domain):
+    if qn.startswith('fake'):
+        # reply.add_answer(RR(rname=qname, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP2)))
+        reply.header.rcode = 3
+    elif qn == victim_domain or qn.endswith('.' + victim_domain):
         for name, rrs in records.items():
             if name == qn:
                 for rdata in rrs:
@@ -76,9 +79,7 @@ def dns_response(data, client_ip):
             reply.add_ar(RR(rname=victim_domain, rtype=QTYPE.NS, rclass=1, ttl=TTL, rdata=rdata))
 
         reply.add_auth(RR(rname=victim_domain, rtype=QTYPE.SOA, rclass=1, ttl=TTL, rdata=soa_record))
-    elif qn.startswith('fake'):
-        # reply.add_answer(RR(rname=qname, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP2)))
-        reply.header.rcode = 3
+
     print("---- Reply:\n", reply)
 
     # install BIND 9.11 or earlier/ Unbound/s
