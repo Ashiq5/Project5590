@@ -26,7 +26,7 @@ class DomainName(str):
 
 
 attack_domain = DomainName('securekey.app.')
-victim_domain = DomainName('findall.app.')
+victim_domain = DomainName('securekey.app.')
 IP = '67.205.178.106'
 IP2 = '127.0.0.1'
 TTL = 30
