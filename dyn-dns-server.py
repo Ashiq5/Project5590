@@ -64,7 +64,7 @@ def dns_response(data, client_ip):
     qtype = request.q.qtype
     qt = QTYPE[qtype]
 
-    if qn == attack_domain:
+    if qn == attack_domain or ['ns1', 'ns2', 'mail', 'hostmaster'] in qn:
         for name, rrs in records.items():
             if name == qn:
                 for rdata in rrs:
@@ -78,6 +78,7 @@ def dns_response(data, client_ip):
         reply.add_auth(RR(rname=attack_domain, rtype=QTYPE.SOA, rclass=1, ttl=TTL, rdata=soa_record))
 
     elif qn.endswith('.' + attack_domain):  # NXDomain
+
         for rdata in referral_responses:
             reply.add_auth(RR(rname=attack_domain, rtype=QTYPE.NS, rclass=1, ttl=TTL, rdata=rdata))
     print("---- Reply:\n", reply)
