@@ -80,7 +80,7 @@ def dns_response(data, client_ip):
 
         reply.add_auth(RR(rname=attack_domain, rtype=QTYPE.SOA, rclass=1, ttl=TTL, rdata=soa_record))
     elif qn.startswith('fake'):
-        reply.add_answer(RR(rname=qname, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP)))
+        reply.add_answer(RR(rname=qname, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP2)))
         # reply.header.rcode = 3
     elif qn.endswith('.' + attack_domain):  # NXDomain
         val = 0  # random.choice([0, 1])
