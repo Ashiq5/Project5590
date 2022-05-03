@@ -27,7 +27,7 @@ class DomainName(str):
 attack_domain = DomainName('securekey.app.')
 victim_domain = DomainName('findall.app.')
 IP = '67.205.178.106'
-IP2 = ''
+IP2 = '127.0.0.1'
 TTL = 30
 
 soa_record = SOA(
@@ -43,7 +43,7 @@ soa_record = SOA(
 )
 ns_records = [NS(attack_domain.ns1), NS(attack_domain.ns2)]
 records = {
-    attack_domain: [A(IP), AAAA((0,) * 16), MX(attack_domain.mail), soa_record] + ns_records,
+    attack_domain: [A(IP2), MX(attack_domain.mail), soa_record] + ns_records,
     attack_domain.ns1: [A(IP)],  # MX and NS records must never point to a CNAME alias (RFC 2181 section 10.3)
     attack_domain.ns2: [A(IP)],
     attack_domain.mail: [A(IP)],
