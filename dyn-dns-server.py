@@ -64,7 +64,8 @@ def dns_response(data, client_ip):
     qtype = request.q.qtype
     qt = QTYPE[qtype]
 
-    if qn == attack_domain or ['ns1', 'ns2', 'mail', 'hostmaster'] in qn:
+    if qn == attack_domain or qn.startswith('ns1') or qn.startswith('ns2') or \
+            qn.startswith('mail') or qn.startswith('hostmaster'):
         for name, rrs in records.items():
             if name == qn:
                 for rdata in rrs:
