@@ -26,7 +26,8 @@ class DomainName(str):
 
 attack_domain = DomainName('securekey.app.')
 victim_domain = DomainName('findall.app.')
-IP = '127.0.0.1'
+IP1 = '67.205.178.106'
+IP2 = ''
 TTL = 30
 
 soa_record = SOA(
