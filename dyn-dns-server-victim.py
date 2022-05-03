@@ -86,7 +86,7 @@ def dns_response(data, client_ip):
         now = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
         ip = client_ip
         # details of the flags below
-        line = now + ' ' + ip + ' ' + qn.replace('.' + dom + '.', '') + ' ' + qt + ' ' + \
+        line = now + ' ' + ip + ' ' + qn + ' ' + qt + ' ' + \
                str(reply.header.rcode) + ' ' + str(request.header.tc) + ' ' + str(request.header.rd) + \
                ' ' + str(request.header.cd)
         os.system(
